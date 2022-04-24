@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import pymongo
 import model_reader
+from model_output import model_to_xlsx
 
 load_dotenv()
 
@@ -31,5 +32,4 @@ if connected:
   
   results = model_reader.read(client, DATABASE, COLLECTION)
 
-  for k, v in results.items():
-    print(k, v)
+  model_to_xlsx(COLLECTION, results)
