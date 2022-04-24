@@ -11,9 +11,10 @@ can look at the entire collection.
 2. Enter your database name, and the collection you wish to analyze.
 3. Run `py mtd.py`
 
+Data is output to an XLS file currently just called "database.xlsx".
 ## Next Steps
 * Analyze any number of collections given in the .env file.
-* Output data to CSV or XLS file.
+* :white_check_mark: Output data to XLS file.
 * XLS file gets data on sheet two, sheet one contains charts to help the user consume the data.
 * An option to create Django models based on validated data in the XLS file. i.e. the program
 returns a dataset, the user reviews the data, and then marks the correct type of data for each column
