@@ -11,7 +11,7 @@ def read(client: MongoClient, database: str, collection: str, limit:int=1000, fi
   filter: A DSL query to limit the docs to a subset. 
   """
   number_of_documents = 0
-  skip=0
+  skip=124347
   counts = {
     # Example of end result this dict should be.
     # 'field_name': {

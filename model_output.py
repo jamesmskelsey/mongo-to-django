@@ -27,6 +27,10 @@ def model_to_xlsx(model_name: str, data: dict) -> bool:
 
   row = 1
   col = 0
+  ## 1b. Analyze the fields and fill an array with objects representing what will end up being each row
+  analyzed_fields = analyze_fields(data)
+  print(analyzed_fields)
+  
   number_of_items = 0
   # 2. For each field, write the field name, then...
   for field_name, field_types in data.items():
@@ -74,6 +78,43 @@ def model_to_xlsx(model_name: str, data: dict) -> bool:
   workbook.close()
 
   return True
+
+def analyze_fields(data: dict) -> list:
+  output = []
+  number_of_items = 0
+  for field_name, field_types in data.items():
+    field = {
+      "name": field_name,
+      "types": [],
+      "count": 0
+    }
+    if field_name == "_id":
+      for _, count_of_type in field_types.items():
+        number_of_items = count_of_type
+    else:  
+      for type_name, count_of_type in field_types.items():
+        # Type of the field
+        # How many are this type
+        # Percentage of this type of the total
+        type_obj = {
+          "type": extract_class_name(type_name),
+          "count": count_of_type,
+          "percent": count_of_type / number_of_items,
+        }
+        field["count"] += count_of_type
+        field["types"].append(type_obj)
+      # in the last index, record an undefined column if they're not all accounted for
+      if field["count"] < number_of_items:
+        type_obj = {
+          "type": "undefined",
+          "count": number_of_items - field["count"],
+          "percent": (number_of_items - field["count"]) / number_of_items
+        }
+    # Finally, append the field to the output of the analysis.
+    output.append(field)
+  return output
+
+        
 
 def find_field_with_most_types(data: dict) -> int:
   longest = 0
