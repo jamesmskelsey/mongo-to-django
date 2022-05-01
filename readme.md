@@ -14,11 +14,36 @@ can look at the entire collection.
 Data is output to an XLS file currently just called "database.xlsx".
 ## Next Steps
 * Analyze any number of collections given in the .env file.
-* :white_check_mark: Output data to XLS file.
 * XLS file gets data on sheet two, sheet one contains charts to help the user consume the data.
 * An option to create Django models based on validated data in the XLS file. i.e. the program
 returns a dataset, the user reviews the data, and then marks the correct type of data for each column
 and then the models can be generated based on that.
 * Based on column name and the types of data, make appropriate suggestions about what type a column 
-should be.
+should be. Todo: make each data type into a array of dicts and pass it off to an analyzer first before 
+writing it to the work sheet. That way each field turns in to this:
 
+  ``` python
+  field = [
+    {
+      "field_name": "example_name",
+      "types": [
+        {
+          "type": "str",
+          "count": 5215,
+          "percent": 52.15,
+          "format": green_format
+        },
+        {
+          "type": "undefined",
+          "count": 4785,
+          "percent": 47.85,
+          "format": red_format
+        }
+      ]
+    }
+  ]
+  ```
+
+## Completed Tasks
+* :white_check_mark: Output data to XLS file.
+* :white_check_mark: Add percentage column.
