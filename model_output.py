@@ -5,6 +5,8 @@ def model_to_xlsx(model_name: str, data: dict) -> bool:
   worksheet = workbook.add_worksheet(model_name)
   bold_format = workbook.add_format()
   bold_format.set_bold()
+
+  percentage_format = workbook.add_format({'num_format': '0.00%'})
   
   # Start from the first cell. Rows and columns are zero indexed.
   row = 0
@@ -19,19 +21,47 @@ def model_to_xlsx(model_name: str, data: dict) -> bool:
   for _ in range(longest):
     worksheet.write(0, col,     "Type",  bold_format)
     worksheet.write(0, col + 1, "Count", bold_format)
-    col += 2
+    worksheet.write(0, col + 2, "Percent",     bold_format)
+    worksheet.write(0, col + 3, " ",     bold_format)
+    col += 4
 
   row = 1
   col = 0
+  number_of_items = 0
   # 2. For each field, write the field name, then...
   for field_name, field_types in data.items():
     worksheet.write(row, col, field_name)
     ## 2a. For each type in each field, write the type, then in the next column write the number
-    for type_name, count_of_type in field_types.items():
-      col += 1
-      worksheet.write_string(row, col, extract_class_name(type_name))
-      col += 1
-      worksheet.write_number(row, col, count_of_type)
+    # track how many items we listed, so we can include a "undefined" if not all of them are used
+    count = 0
+    if field_name == "_id":
+      for _, count_of_type in field_types.items():
+        number_of_items = count_of_type
+    else:  
+      for type_name, count_of_type in field_types.items():
+        col += 1
+        # Type of the field
+        worksheet.write_string(row, col, extract_class_name(type_name))
+        col += 1
+        # How many are this type
+        worksheet.write_number(row, col, count_of_type)
+        count += count_of_type
+        col += 1
+        # Percentage of this type of the total
+        worksheet.write_number(row, col, count_of_type / number_of_items, percentage_format)
+        col += 1
+      # in the last row, record an undefined column if they're not all accounted for
+      if count < number_of_items:
+        col += 1
+        worksheet.write_string(row, col, "undefined")
+        col += 1
+        worksheet.write_number(row, col, number_of_items - count)
+        col += 1
+        worksheet.write_number(row, col, (number_of_items - count) / number_of_items, percentage_format)
+        col += 1
+
+
+    # Reset the cursor to the beginning of the next row for the next field
     row += 1
     col = 0
 
