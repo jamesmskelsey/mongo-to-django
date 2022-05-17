@@ -6,10 +6,15 @@ of all of the fields, with the types of data in the fields.
 This is meant to be very similar to the MongoDBCompass "Analyze" feature, except that the user
 can look at the entire collection.
 
-## Usage
+## Usage - Mongo to Excel
 1. Enter connection string for your Mongo database in the .env file as CONNECTION_STRING.
 2. Enter your database name, and the collection you wish to analyze.
 3. Run `py mtd.py`
+
+## Data to Pydantic
+1. Ensure the field names and data types are in the left most column of `database.xlsx`
+2. Run `py dtp.py`
+3. Review the output pydantic model
 
 Data is output to an XLS file currently just called "database.xlsx".
 ## Next Steps
@@ -47,3 +52,9 @@ writing it to the work sheet. That way each field turns in to this:
 ## Completed Tasks
 * :white_check_mark: Output data to XLS file.
 * :white_check_mark: Add percentage column.
+* :white_check_mark: Analyze one level of nested documents
+
+### FAQ
+
+1. Why did you use xlsxwriter for one thing, and then turn around and use openpyxl for the other?
+A. My friend my friend! It's because I found the one thing, and then realized it couldn't do the other thing, so I wasn't going to go back and rewrite the first thing right away.
