@@ -1,0 +1,34 @@
+{
+    "$id": "companies.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "companies",
+    "type": "object",
+    "properties": {
+        "first_name": {
+            "type": "string",
+            "description": "Replace me."
+        },
+        "last_name": {
+            "type": "string",
+            "description": "Replace me."
+        },
+        "age": {
+            "type": "integer",
+            "description": "Replace me."
+        },
+        "pets": {
+            "type": "array",
+            "description": "Replace me."
+        },
+        "comment": {
+            "type": "string",
+            "description": "Replace me."
+        },
+        "null": {
+            "type": "",
+            "description": "Replace me."
+        }
+    },
+    "required": [],
+    "definitions": {}
+}
