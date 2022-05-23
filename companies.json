@@ -1,7 +1,7 @@
 {
     "$id": "companies.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "companies",
+    "title": "Companies",
     "type": "object",
     "properties": {
         "first_name": {
@@ -18,17 +18,29 @@
         },
         "pets": {
             "type": "array",
-            "description": "Replace me."
+            "description": "Replace me.",
+            "items": [
+                {
+                    "$ref": "#/definitions/Pet"
+                }
+            ]
         },
         "comment": {
             "type": "string",
             "description": "Replace me."
-        },
-        "null": {
-            "type": "",
-            "description": "Replace me."
         }
     },
     "required": [],
-    "definitions": {}
+    "definitions": {
+        "Pet": {
+            "properties": {
+                ".name": {
+                    "type": "string"
+                },
+                ".age": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
 }

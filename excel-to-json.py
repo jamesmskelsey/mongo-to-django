@@ -23,7 +23,20 @@ def model_file_name(model_name):
 
 def capitalize_first(name):
     lower = name.lower()
-    return f"{lower[0:1]}{lower[1:]}"
+    return f"{lower[0:1].upper()}{lower[1:]}"
+
+def define_sub(schema, field_name, fields):
+    print(field_name, fields)
+    for (sub_field_name, sub_field_type) in fields:
+        schema["definitions"][field_name]["properties"][sub_field_name[len(f"{field_name}."):]] = {"type": translate_py_to_json(sub_field_type)} 
+
+def singularize(plural):
+    # companies -> Company
+    plural = capitalize_first(plural).replace("ies", "y")
+    # dogs -> Dog
+    plural = capitalize_first(plural).replace("s", "")
+    return plural
+
 
 for sheetname in wb.sheetnames:
     ws = wb[sheetname]
@@ -51,51 +64,35 @@ for sheetname in wb.sheetnames:
         }
     }
 
-    d = {
-        "name": "str",
-        "name.first": "str",
-        "name.last": "str",
-    }
-
+    # separate out the primary fields (as in the fields that don't belong to objects in an array)
     only_primary_fields = [(e, v) for (e,v) in model_as_dict.items() if "." not in str(e)]
     for field_name, field_type in only_primary_fields:
-        if field_name != "null":
+        # sometimes field name is null, so skip those
+        print(field_name)
+        if field_name != "null" and field_name != None:
+            # but otherwise, we'll just put the type and the name in the properties
             schema['properties'][field_name] = {
                 "type": translate_py_to_json(field_type),
                 "description": "Replace me."
             }
 
+        if field_type == "array":
+            singled_name = singularize(field_name)
+            schema['properties'][field_name]["items"] = [{
+                "$ref": f"#/definitions/{singled_name}"
+            }]
+            schema["definitions"] = {
+                singled_name: {
+                    "properties": {}
+                }
+            }
+            print("Attaching array...")
+            define_sub(schema, singled_name, [(e, v) for (e,v) in model_as_dict.items() if f"{field_name}." in str(e)])
+
+
+    
+
     # Create a .py file, make the model
     with open(model_file_name(sheetname), 'w', encoding='utf-8') as f:
         f.write(json.dumps(schema, indent=4))
         f.close()
-        # level = 0
-        # f.write(indent(level, "{\n"))
-        # level += 1
-        # f.write(indent(level, f'"$id": "{sheetname}.json",\n'))
-        # f.write(indent(level, f'"$schema": "http://json-schema.org/draft-07/schema#",\n'))
-        # f.write(indent(level, f'"title": "{capitalize_first(sheetname)}",\n'))
-        # f.write(indent(level, f'"type": "object",\n'))
-        # # properties
-        # f.write(indent(level, '"properties": {\n'))
-        # # logic to write all of the fields at indent 2 and beyond
-
-        # for field_name, field_type in model_as_dict.items():
-        #     write_property(f, level, field_name, field_type)
-
-        # f.write(indent(level, '},\n'))
-
-        # # A blank space for required fields so the user can fill it in
-        # f.write(indent(level, '"required": [\n'))
-        # f.write(indent(level, '],\n'))
-
-        # # then we fill in the definitions of things like "Pet", etc
-        # f.write(indent(level, '"definitions": {\n'))
-        # # logic to write all of the different properties of the sub models
-        # f.write(indent(level, '}\n'))
-
-
-        # level -= 1
-        # f.write(indent(level, "}\n"))
-        # f.close()
-

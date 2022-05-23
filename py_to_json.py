@@ -11,5 +11,4 @@ MAP = {
 }
 
 def translate_py_to_json(field_type):
-    print("uh, hello?", field_type)
     return MAP[field_type] if field_type is not None else ""
