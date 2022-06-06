@@ -11,7 +11,7 @@ def read(client: MongoClient, database: str, collection: str, limit:int=1000, fi
     filter: A DSL query to limit the docs to a subset. 
     """
     number_of_documents = 0
-    skip=124347
+    skip=0
     counts = {
         # Example of end result this dict should be.
         # 'field_name': {
@@ -57,6 +57,8 @@ def read(client: MongoClient, database: str, collection: str, limit:int=1000, fi
 def add_or_increment_field_type(target_dict, field_name, field_type, current={}):
     # I don't care what the value is - only what the type is, so convert is straight away.
     field_type = type(field_type)
+    # if "." in field_name:
+    #     return
     # option 1 - field name does not exist.
     ## check for the field name - it doesn't exist, so we create one.
     if field_name not in target_dict:
@@ -72,6 +74,6 @@ def add_or_increment_field_type(target_dict, field_name, field_type, current={})
 
     # If the type is a dict, we need to go at least one level lower and analyze those fields as well.
     # we'll append the name of the current field to those fields
-    if field_type == dict:
+    if field_type == dict and "." not in field_name:
         for sub_field_name, sub_field_type in current[field_name].items():
-            add_or_increment_field_type(target_dict, f"{field_name}.{sub_field_name}", sub_field_type)
+            add_or_increment_field_type(target_dict, f"{field_name}.{sub_field_name}", sub_field_type, current)

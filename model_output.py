@@ -1,7 +1,7 @@
 import xlsxwriter
 
 def model_to_xlsx(model_name: str, data: dict) -> bool:
-  workbook = xlsxwriter.Workbook('database.xlsx')
+  workbook = xlsxwriter.Workbook(f'{model_name}.xlsx')
   worksheet = workbook.add_worksheet(model_name)
   bold_format = workbook.add_format()
   bold_format.set_bold()

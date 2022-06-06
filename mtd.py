@@ -29,7 +29,7 @@ except Exception:
 
 if connected:
   print("Connected to server. Now attempting to access documents.\n")
-  
-  results = model_reader.read(client, DATABASE, COLLECTION)
-
-  model_to_xlsx(COLLECTION, results)
+  for collection in COLLECTION.split(','):
+    print(collection)
+    results = model_reader.read(client, DATABASE, collection)
+    model_to_xlsx(collection, results)
